@@ -126,7 +126,6 @@ class TerminalDashboard:
 
                 # Iterate through each string in current block
                 for k, string_to_print in enumerate(block.string_with_attrib):
-                    # print(k)
                     # check for resize
                     if (
                         self.current_line < self.num_rows
@@ -236,7 +235,6 @@ class TerminalDashboard:
                         starting_line - ii, self.current_row + 1, ch, color
                     )
 
-                    # for ii in range(current_bar, 0, -1):
                     self.screen.addstr(
                         starting_line - current_bar - 1,
                         self.current_row,
