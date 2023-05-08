@@ -32,9 +32,12 @@ class TerminalDashboard:
         self.windows = None
         self.current_line = 1
         self.current_row = 1
+        self.start_vertical_row = 1
 
         # Colors
         curses.start_color()
+
+        ## TODO: Add automatic color pairs
         # curses.use_default_colors()
         # if curses.has_colors():
         #     for i in range(0, curses.COLORS):
@@ -88,38 +91,14 @@ class TerminalDashboard:
 
     def run(self):
         try:
-            # print(curses.baudrate())
-            # print(curses.can_change_color())
-            # print(curses.color_content(2))
-
             for i in range(0, 255):
                 self.screen.addstr(str(i), curses.color_pair(i))
 
-            # self.screen.addch("d", curses.A_BOLD)
             self.screen.attron(curses.A_BOLD)
-            # self.screen.addch("e")
-
             self.screen.bkgd(curses.A_ITALIC)
-            # self.screen.bkgdset(curses.A_BOLD)
-            # self.screen.addstr("esfdsd")
             self.screen.border()
             self.screen.box()
 
-            # while True:
-            #     self.num_rows, self.num_cols = self.screen.getmaxyx()
-
-            #     self.screen.addstr(
-            #         1, 1, f"rows: {self.num_rows}", curses.color_pair(10)
-            #     )
-            #     self.screen.addstr(
-            #         2, 1, f"Columns: {self.num_rows}", curses.color_pair(10)
-            #     )
-            #     self.screen.attron(curses.A_BOLD)
-            #     self.screen.border()
-            #     self.screen.box()
-
-            #     self.all_refresh()
-            #     self.all_erase()
         except:
             print(curses.error)
             self.cleanup()
@@ -127,7 +106,7 @@ class TerminalDashboard:
 
         self.screen.getch()
 
-    def print_info(self, blocks, row):
+    def print_info(self, blocks, col):
         try:
             # checking max num of line and columns
             # checking for resize
@@ -135,8 +114,8 @@ class TerminalDashboard:
 
             self.current_line = 1
 
-            if row > 1:
-                self.current_row = int(self.num_cols / row)
+            if col > 1:
+                self.current_row = int(self.num_cols / col)
             else:
                 self.current_row = 1
 
@@ -176,10 +155,9 @@ class TerminalDashboard:
             # self.all_refresh()
             # self.all_erase()
 
-        except:
-            print(curses.error)
+        except Exception as e:
+            print(curses.error, e)
             self.cleanup()
-            raise
 
     def draw_bar(self, title="title", value=0.0, color=curses.A_BOLD, attrib="normal"):
         try:
@@ -231,10 +209,15 @@ class TerminalDashboard:
             raise
 
     def draw_vertical_bar(
-        self, title="title", value=0.0, color=curses.A_BOLD, attrib="normal"
+        self,
+        title="title",
+        value=0.0,
+        color=curses.A_BOLD,
+        attrib="normal",
+        start_row=40,
     ):
         self.num_rows, self.num_cols = self.screen.getmaxyx()
-        self.current_row += 5
+        self.current_row = start_row
         starting_line = int(self.num_rows / 2)
         try:
             bar_height = starting_line * 0.8
@@ -264,8 +247,6 @@ class TerminalDashboard:
                         self.current_row,
                         f"{title}",
                     )
-
-            # self.screen.getch()
 
         except:
             print(curses.error)
